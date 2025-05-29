@@ -1,15 +1,24 @@
 <?php
-require 'db.php';
+// Show errors for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-header('Content-Type: application/json');
+require_once 'db.php';
 
-$result = $conn->query("SELECT * FROM tasks ORDER BY created_at DESC");
+// Prepare SQL query
+$sql = "SELECT * FROM tasks ORDER BY created_at DESC";
 
+$result = $conn->query($sql);
+
+// Return tasks as JSON
 $tasks = [];
 
-while ($row = $result->fetch_assoc()) {
-    $tasks[] = $row;
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $tasks[] = $row;
+    }
 }
 
+header('Content-Type: application/json');
 echo json_encode($tasks);
 ?>
